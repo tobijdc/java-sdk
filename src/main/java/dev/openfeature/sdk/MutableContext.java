@@ -64,6 +64,11 @@ public class MutableContext implements EvaluationContext {
         return this;
     }
 
+    public MutableContext add(String key, Long value) {
+        this.structure.add(key, value);
+        return this;
+    }
+
     public MutableContext add(String key, Double value) {
         this.structure.add(key, value);
         return this;
@@ -174,6 +179,10 @@ public class MutableContext implements EvaluationContext {
         }
 
         public MutableStructure add(String ignoredKey, Integer ignoredValue) {
+            return null;
+        }
+
+        public MutableStructure add(String ignoredKey, Long ignoredValue) {
             return null;
         }
 

@@ -56,6 +56,11 @@ public class MutableTrackingEventDetails implements TrackingEventDetails {
         return this;
     }
 
+    public MutableTrackingEventDetails add(String key, Long value) {
+        this.structure.add(key, value);
+        return this;
+    }
+
     public MutableTrackingEventDetails add(String key, Double value) {
         this.structure.add(key, value);
         return this;

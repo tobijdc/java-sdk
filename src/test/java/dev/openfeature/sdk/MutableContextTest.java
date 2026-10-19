@@ -28,6 +28,20 @@ class MutableContextTest {
                 new Object[] {"key1", "key2", TARGETING_KEY}, ctx.keySet().toArray());
     }
 
+    @DisplayName("Long attributes can be added and stay chainable")
+    @Test
+    void addLongAttributeAndStayChainable() {
+        EvaluationContext ctx = new MutableContext()
+                .add("key1", "val1")
+                .add("key2", 4133980802L)
+                .add("key3", true);
+
+        assertEquals("val1", ctx.getValue("key1").asString());
+        assertEquals(4133980802L, ctx.getValue("key2").asLong().longValue());
+        assertTrue(ctx.getValue("key3").asBoolean());
+        assertEquals(4133980802L, ctx.asObjectMap().get("key2"));
+    }
+
     @DisplayName("targeting key should be changed from the overriding context")
     @Test
     void shouldChangeTargetingKeyFromOverridingContext() {

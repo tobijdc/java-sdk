@@ -38,6 +38,15 @@ class MutableStructureTest {
     }
 
     @Test
+    void addLongAttribute() {
+        MutableStructure structure = new MutableStructure();
+
+        assertSame(structure, structure.add("longValue", 4133980802L));
+        assertEquals(4133980802L, structure.getValue("longValue").asLong().longValue());
+        assertEquals(4133980802L, structure.asObjectMap().get("longValue"));
+    }
+
+    @Test
     void unequalMutableStructuresAreNotEqual() {
         MutableStructure m1 = new MutableStructure();
         m1.add("key1", "val1");

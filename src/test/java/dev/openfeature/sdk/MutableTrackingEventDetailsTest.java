@@ -48,4 +48,13 @@ class MutableTrackingEventDetailsTest {
                 new Object[] {new Value(8), new Value(9)},
                 track.getValue("key8").asList().toArray());
     }
+
+    @Test
+    void shouldStoreLongAttributes() {
+        MutableTrackingEventDetails track = new MutableTrackingEventDetails(1L);
+        track.add("longValue", 4133980802L);
+
+        assertEquals(new Value(4133980802L), track.getValue("longValue"));
+        assertEquals(4133980802L, track.getValue("longValue").asLong().longValue());
+    }
 }
