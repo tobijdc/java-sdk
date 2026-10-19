@@ -4,9 +4,9 @@ import static dev.openfeature.sdk.Structure.mapToStructure;
 
 import dev.openfeature.sdk.exceptions.TypeMismatchError;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.ToString;
@@ -288,7 +288,11 @@ public class Value implements Cloneable {
     @Override
     protected Value clone() {
         if (this.isList()) {
-            List<Value> copy = this.asList().stream().map(Value::new).collect(Collectors.toList());
+            List<Value> listValue = this.asList();
+            List<Value> copy = new ArrayList<>(listValue.size());
+            for (Value element : listValue) {
+                copy.add(new Value(element));
+            }
             return new Value(copy);
         }
         if (this.isStructure()) {
@@ -325,8 +329,12 @@ public class Value implements Cloneable {
         } else if (object instanceof Structure) {
             return new Value((Structure) object);
         } else if (object instanceof List) {
-            return new Value(
-                    ((List<Object>) object).stream().map(o -> objectToValue(o)).collect(Collectors.toList()));
+            List<Object> listValue = (List<Object>) object;
+            List<Value> values = new ArrayList<>(listValue.size());
+            for (Object element : listValue) {
+                values.add(objectToValue(element));
+            }
+            return new Value(values);
         } else if (object instanceof Instant) {
             return new Value((Instant) object);
         } else if (object instanceof Map) {

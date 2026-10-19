@@ -3,6 +3,7 @@ package dev.openfeature.sdk;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 @SuppressWarnings({"PMD.BeanMembersShouldSerialize", "checkstyle:MissingJavadocType"})
@@ -42,13 +43,11 @@ abstract class AbstractStructure implements Structure {
      */
     @Override
     public Map<String, Object> asObjectMap() {
-        return attributes.entrySet().stream()
-                // custom collector, workaround for Collectors.toMap in JDK8
-                // https://bugs.openjdk.org/browse/JDK-8148463
-                .collect(
-                        HashMap::new,
-                        (accumulated, entry) -> accumulated.put(entry.getKey(), convertValue(entry.getValue())),
-                        HashMap::putAll);
+        Map<String, Object> objectMap = HashMapUtils.forEntries(attributes.size());
+        for (Entry<String, Value> entry : attributes.entrySet()) {
+            objectMap.put(entry.getKey(), convertValue(entry.getValue()));
+        }
+        return objectMap;
     }
 
     @Override
