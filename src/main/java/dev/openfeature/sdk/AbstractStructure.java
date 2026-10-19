@@ -10,6 +10,12 @@ abstract class AbstractStructure implements Structure {
 
     protected final Map<String, Value> attributes;
 
+    /*
+     * Lazily created unmodifiable view of {@link #attributes}. Excluded from serialization because it only
+     * wraps {@code attributes} and would otherwise be written out twice.
+     */
+    private transient Map<String, Value> unmodifiableView;
+
     @Override
     public boolean isEmpty() {
         return attributes == null || attributes.isEmpty();
@@ -32,7 +38,12 @@ abstract class AbstractStructure implements Structure {
         if (attributes == null || attributes.isEmpty()) {
             return Collections.emptyMap();
         }
-        return Collections.unmodifiableMap(attributes);
+        Map<String, Value> view = unmodifiableView;
+        if (view == null) {
+            view = Collections.unmodifiableMap(attributes);
+            unmodifiableView = view;
+        }
+        return view;
     }
 
     /**

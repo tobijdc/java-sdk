@@ -38,6 +38,29 @@ class MutableStructureTest {
     }
 
     @Test
+    void asUnmodifiableMapIsCached() {
+        MutableStructure structure = new MutableStructure();
+        structure.add("key", "val");
+
+        Map<String, Value> unmodifiableMap = structure.asUnmodifiableMap();
+        assertSame(unmodifiableMap, structure.asUnmodifiableMap());
+    }
+
+    @Test
+    void cachedUnmodifiableMapStaysLiveForMutableStructures() {
+        MutableStructure structure = new MutableStructure();
+        // needs at least one entry: the empty case returns Collections.emptyMap() and is not cached
+        structure.add("initial", "val");
+        Map<String, Value> unmodifiableMap = structure.asUnmodifiableMap();
+
+        structure.add("key", "val");
+
+        assertEquals(new Value("val"), unmodifiableMap.get("key"));
+        Assertions.assertThrows(
+                UnsupportedOperationException.class, () -> unmodifiableMap.put("other", new Value("x")));
+    }
+
+    @Test
     void unequalMutableStructuresAreNotEqual() {
         MutableStructure m1 = new MutableStructure();
         m1.add("key1", "val1");
